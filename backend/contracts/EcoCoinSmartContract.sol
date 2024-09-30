@@ -11,9 +11,9 @@ contract ContributionRewardSystem {
 
     address public owner;
 
-    uint256 public  LEVEL1_REWARD = 1 * (10 ** 18); // 10 CK tokens
-    uint256 public LEVEL2_REWARD = 2 * (10 ** 18); // 20 CK tokens
-    uint256 public  LEVEL3_REWARD = 4 * (10 ** 18); // 40 CK tokens
+    uint256 public  LEVEL1_REWARD = 1 * (10 ** 18); // 1 CK tokens
+    uint256 public LEVEL2_REWARD = 2 * (10 ** 18); // 2 CK tokens
+    uint256 public  LEVEL3_REWARD = 4 * (10 ** 18); // 4 CK tokens
 
 
     error Unauthorized(string message);           

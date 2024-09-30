@@ -34,7 +34,7 @@ contract PlasticContributionNFT is ERC721URIStorage, Ownable {
     constructor() ERC721("PlasticContributionNFT", "PCN") Ownable(msg.sender){}
 
     // Function for the factory to mint an NFT for a user after a contribution
-    function mintNFT(address recipient) public onlyOwner returns (uint256) {
+    function mintNFT(address recipient) public  returns (uint256) {
         // _tokenIds.increment();
         // _tokenIds++;
 
