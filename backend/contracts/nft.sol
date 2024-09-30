@@ -27,9 +27,9 @@ contract PlasticContributionNFT is ERC721URIStorage, Ownable {
     error Unauthorized(); // Thrown when the caller is not authorized
     error InvalidTokenId(); // Thrown when a token ID does not exist
     
-    string public level1URI = "https://violet-major-ocelot-686.mypinata.cloud/ipfs/QmPjACyCpF2sB6DaYRjWgKToEhspNvSzKGLLJjc3vucYbQ";
-    string public level2URI = "https://violet-major-ocelot-686.mypinata.cloud/ipfs/QmPjACyCpF2sB6DaYRjWgKToEhspNvSzKGLLJjc3vucYbQ";
-    string public level3URI = "https://violet-major-ocelot-686.mypinata.cloud/ipfs/QmPjACyCpF2sB6DaYRjWgKToEhspNvSzKGLLJjc3vucYbQ";
+    string public level1URI = "https://gateway.pinata.cloud/ipfs/QmTSNLXtLuMBjmywUTz9VDR362dBENWrHBs1nNX5EUAgoG";
+    string public level2URI = "https://gateway.pinata.cloud/ipfs/QmNNVDyeXfsThRveGoLR4DHNh1iLa2r1rMp5BCeaqk6mN2";
+    string public level3URI = "https://gateway.pinata.cloud/ipfs/QmQGUKB3VXzVFAVSz7LahMHGSQxPF6axtQkncP3YgEBp6u";
 
     constructor() ERC721("PlasticContributionNFT", "PCN") Ownable(msg.sender){}
 
