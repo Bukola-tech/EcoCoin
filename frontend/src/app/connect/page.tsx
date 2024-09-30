@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {ethers} from 'ethers';
@@ -7,52 +7,71 @@ import {ethers} from 'ethers';
 import '@rainbow-me/rainbowkit/styles.css';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useReadContract, useBalance, useAccount, useWriteContract } from 'wagmi'
+import { useReadContract, useBalance, useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 
-import {TOKEN_CONTRACT_ABI, TOKEN_CONTRACT_ADDRESS} from '@/config/TokenContract';
-import {CAUSEKOIN_CONTRACT_ABI, CAUSEKOIN_CONTRACT_ADDRESS} from '@/config/CauseKoin';
+import { ECOCOIN_CONTRACT_ADDRESS} from '@/config/EcoCoin';
+import {ECO_CONTRACT_ABI, ECO_CONTRACT_ADDRESS} from '@/config/EcoContract'
+import {ECOCOIN_NFT_CONTRACT_ADDRESS, ECOCOIN_NFT_CONTRACT_ABI} from '@/config/EcoCoinNFT'
 
 
 export default function Connect() {
-  const [tokenBalance, setTokenBalance] = useState<number>(0);
-  const [walletAddress, setWalletAddress] = useState<string>('');
-  const router = useRouter();
+  useEffect(() => {
+    refetch()
+  }, [])
+  const [tokenId, setTokenId] = useState<string>("");
+
 
 const { address } = useAccount()
-const { data: hash, writeContract, isPending } = useWriteContract()
+const { data: hash, writeContractAsync, isPending } = useWriteContract()
 
    const { data, refetch, isLoading } = useBalance({
     address: address as `0x${string}`,
-    token: TOKEN_CONTRACT_ADDRESS as `0x${string}`,
+    token: ECOCOIN_CONTRACT_ADDRESS as `0x${string}`,
     
   })
 
   
 
 
-const handleContribution = async () => {
+const handleContribution = async  (tokenIdx: number) => {
   try {
-    writeContract({
-      address: CAUSEKOIN_CONTRACT_ADDRESS as `0x${string}`,
-    abi: CAUSEKOIN_CONTRACT_ABI,
-    functionName: 'claimTokens',
-    args: [],
+    const tx = await writeContractAsync({
+      address: ECO_CONTRACT_ADDRESS as `0x${string}`,
+    abi: ECO_CONTRACT_ABI,
+    functionName: 'claimRewards',
+    args: [BigInt(tokenIdx)],
   })
-  } catch (error) {
-    console.error(error)
-  }
 
-  console.log(hash)
+  console.log("hash", tx)
+  } catch (error) {
+    console.log("error", error)
+    alert(error.message)
+  }
 
 };
 
+const handleMint = async () => {
+  try {
+    const tx = await writeContractAsync({
+      address: ECOCOIN_NFT_CONTRACT_ADDRESS as `0x${string}`,
+    abi: ECOCOIN_NFT_CONTRACT_ABI,
+    functionName: 'mintNFT',
+    args: [address],
+  })
+  console.log("hash", tx)
+  } catch (error) {
+    console.log("error", error)
+    
+  }
+}
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-100">
-      <ConnectButton />
+      
       <main className="flex flex-col items-center gap-8 bg-white p-10 rounded-lg shadow-md">
         <Image
-          src="/images/causekoin.png" 
-          alt="Your Project Logo"
+          src="/images/ecoCoinLogo.jpeg" 
+          alt="ecoCoin Logo"
           width={180}
           height={38}
           priority
@@ -60,24 +79,39 @@ const handleContribution = async () => {
         <div className="flex flex-col items-center gap-4">
          
             <div className="text-center">
-              <p className="text-lg font-semibold">Connected Account:</p>
-              <p className="text-sm text-gray-600">{address}</p>
-              <p className="mt-2 text-lg font-semibold">Token Balance:</p>
-              <p className="text-sm text-gray-600">
-                {isLoading ? 'Loading...' : data?.value ? parseFloat(ethers.formatEther(data.value)).toFixed(4) : '0'} {data?.symbol || 'Tokens'}
-              </p>
+            {address && (
+              <>
+                <p className="text-lg font-semibold">Connected Account:</p>
+                <p className="text-sm text-gray-600">{address}</p>
+                <p className="mt-2 text-lg font-semibold">Token Balance:</p>
+                <p className="text-sm text-gray-600">
+                  {isLoading ? 'Loading...' : data?.value ? parseFloat(ethers.formatEther(data.value)).toFixed(4) : '0'} {data?.symbol || 'Tokens'}
+                </p>
+              </>
+            )}
+              
             </div>
+
+            <input type="text" placeholder="Enter token ID"  value={tokenId} onChange={(e) => {setTokenId(e.target.value)}} className='border border-gray-300 rounded-md p-2'/>
 
           <button
             className={`px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition 
               // !currentAccount ? "opacity-50 cursor-not-allowed" : ""
             `}
-            onClick={handleContribution}
+            onClick={() => {
+              handleContribution(Number(tokenId)); setTokenId('')
+                
+
+              }}
             // disabled={!currentAccount}
           >
             {isPending ? 'Contributing...' : 'I Have Contributed'}
           </button>
-           
+          <button onClick={handleMint} className='px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition outline-none '>Mint</button>
+
+  <div className='mt-10'>
+          <ConnectButton />
+  </div>
 
           
         </div>

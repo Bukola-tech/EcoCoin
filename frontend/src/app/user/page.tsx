@@ -2,18 +2,13 @@
 import React, {useState} from 'react'
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {ethers} from 'ethers';
-
 
 import '@rainbow-me/rainbowkit/styles.css';
 
+import { useReadContract, useBalance, useAccount, useWriteContract } from 'wagmi'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-
-import { useReadContract, useBalance } from 'wagmi'
-
-import {TOKEN_CONTRACT_ABI, TOKEN_CONTRACT_ADDRESS} from '@/config/TokenContract';
-import {CAUSEKOIN_CONTRACT_ABI} from '@/config/CauseKoin';
+import {ECOCOIN_CONTRACT_ADDRESS} from '@/config/EcoCoin';
 
 
 export default function Home() {
@@ -22,132 +17,40 @@ export default function Home() {
   const [walletAddress, setWalletAddress] = useState<string>('');
   const router = useRouter();
 
-  // const getTokenBalance = async () => {
-  //   // try {
-  //   //   const { ethereum } = window;
-  //   //   if (walletAddress && ethereum) {
-  //   //     const provider = new ethers.BrowserProvider(ethereum);
-  //   //     const signer = await provider.getSigner();
-      
-  //   //     const tokenContract = new ethers.Contract(
-  //   //       process.env.NEXT_PUBLIC_CAUSEKOIN_CONTRACT_ADDRESS as string,
-  //   //       CAUSEKOIN_CONTRACT_ABI,
-  //   //       signer
-  //   //     );
-
-  //   //     // Call contractTokenBalance method to get the token balance
-  //   //     const balance = await tokenContract.contractTokenBalance({ gasLimit: 300000 });
-  //   //     const formattedBalance = ethers.formatUnits(balance, 18); // Assuming 18 decimals for the token
-  //   //     console.log('Contract Token balance:', formattedBalance);
-
-  //   //     setTokenBalance(parseFloat(formattedBalance));
-  //   //   } else {
-  //   //     console.log('No wallet address or Ethereum provider found');
-  //   //   }
-  //   // } catch (error) {
-  //   //   console.log('Error fetching token balance:', error);
-  //   // }
-
-  //     };
-
-
-   const { data, refetch } = useBalance({
+   const { data, refetch, isLoading } = useBalance({
     address: walletAddress as `0x${string}`,
-    token: TOKEN_CONTRACT_ADDRESS as `0x${string}`,
+    token: ECOCOIN_CONTRACT_ADDRESS as `0x${string}`,
   })
 
-  //  const { data: balance, isError, isLoading } = useReadContract({
-  //   address: process.env.NEXT_PUBLIC_CAUSEKOIN_CONTRACT_ADDRESS as string,
-  //   abi: CAUSEKOIN_CONTRACT_ABI,
-  //   functionName: 'balanceOf',
-  //   args: [walletAddress],
-  // });
-
-  // if (isLoading) {
-  //   console.log('Loading balance...');
-  // } else if (isError) {
-  //   console.log('Error fetching balance');
-  // } else {
-  //   const formattedBalance = ethers.formatUnits(balance, 18); // Assuming 18 decimals for the token
-  //   console.log('Contract Token balance:', formattedBalance);
-  //   setTokenBalance(parseFloat(formattedBalance));
-  // }
-
-  // const getTokenBalance = async () => {
-   
-
-    
-  // };
-
-  const requestAccount = async (): Promise<void> => {
-    console.log('Requesting account...');
-    if (window.ethereum) {
-      try {
-        console.log('MetaMask detected');
-        const accounts: string[] = await window.ethereum.request({
-          method: 'eth_requestAccounts',
-        });
-        // console.log('MetaMask accounts', accounts);
-        setWalletAddress(accounts[0]);
-
-        // Save the wallet address in local storage
-        localStorage.setItem('walletAddress', accounts[0]);
-
-        // Redirect to mint page if wallet is connected
-        if (accounts.length > 0) {
-          localStorage.setItem('tokenBalance', tokenBalance.toString());
-          router.push('/');
-          
-        } else {
-          console.log('No accounts found.');
-        }
-      } catch (err: any) {
-        if (err.code === 4001) {
-          // EIP-1193 userRejectedRequest error.
-          console.log('Please connect to MetaMask.');
-        } else {
-          console.error(err);
-        }
-      }
-    } else {
-      console.log('MetaMask not detected');
-      alert('Please install MetaMask and connect to a network');
-    }
-  };
+const getBalance = async () => {
+  refetch()
+  console.log('balance', data)
+}
 
 
+// const { data: hash, writeContract, isPending } = useWriteContract()
 
-  const handleContribution = async () => {
-    // Contribution handling logic goes here
-    
-      try {
-        const { ethereum } = window;
-        if (walletAddress) {
-          const provider = new ethers.BrowserProvider(ethereum);
-          const signer = await provider.getSigner();
-          const tokenContract = new ethers.Contract(
-            process.env.NEXT_PUBLIC_CAUSEKOIN_CONTRACT_ADDRESS as string,
-              CAUSEKOIN_CONTRACT_ABI,
-            signer
-          );
-          try {
-            const balance = await tokenContract.claimTokens({ gasLimit: 300000 });
-            console.log('Reward claimed successfully:', balance);
-          } catch (error) {
-            console.error('Error claiming reward:', error);
-          }
 
-        }
-      } catch (error) {
-        console.log(error);
-      }
-  
-  };
+const handleContribution = async () => {
+//   try {
+//     writeContract({
+//       address: CAUSEKOIN_CONTRACT_ADDRESS as `0x${string}`,
+//     abi: CAUSEKOIN_CONTRACT_ABI,
+//     functionName: 'claimTokens',
+//     args: [],
+//   })
+//   } catch (error) {
+//     console.error(error)
+//   }
+
+  // console.log(hash)
+
+};
 
   return (
 
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-100">
-      <ConnectButton />
+      
       <main className="flex flex-col items-center gap-8 bg-white p-10 rounded-lg shadow-md">
         <Image
           src="/images/causekoin.png" // Updated path to images folder
@@ -157,23 +60,18 @@ export default function Home() {
           priority
         />
         <div className="flex flex-col items-center gap-4">
-          {!walletAddress ? (
-            <button
-              className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-              // onClick={connectWallet}
-              onClick={requestAccount}
-            >
-              Connect Wallet
-            </button>
-           ) : ( 
+          
+            <ConnectButton />
+           
             <div className="text-center">
               <p className="text-lg font-semibold">Connected Account:</p>
               <p className="text-sm text-gray-600">{walletAddress}</p>
               <p className="mt-2 text-lg font-semibold">Token Balance:</p>
               {/* <p className="text-sm text-gray-600">{tokenBalance} Tokens</p> */}
-              <p className="text-sm text-gray-600">{data?.value} Tokens</p>
+            {isLoading ? 'Loading...' : data?.value ? parseFloat(ethers.formatEther(data.value)).toFixed(4) : '0'} {data?.symbol || 'Tokens'}
+              <button onClick={getBalance} className='border border-green-500'>Contribute</button>
             </div>
-          )} 
+          
 
           <button
             className={`px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition 
@@ -184,13 +82,7 @@ export default function Home() {
           >
             I Have Contributed
           </button>
-           <button
-            className="px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition"
-            onClick={() => getTokenBalance()}
-            // disabled={!currentAccount}
-          >
-            {tokenBalance}
-          </button>
+           
 
           
         </div>
