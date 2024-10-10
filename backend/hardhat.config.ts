@@ -13,6 +13,10 @@ const config: HardhatUserConfig = {
       url: process.env.SCROLL_RPC_URL,
       accounts: [process.env.ACCOUNT_PRIVATE_KEY!],
     },
+    arbitrumSepolia: {
+      url: process.env.ARBITRUM_RPC_URL,
+      accounts: [process.env.ACCOUNT_PRIVATE_KEY!],
+    },
   },
   
   etherscan: {
