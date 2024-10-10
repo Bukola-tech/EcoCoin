@@ -3,11 +3,10 @@ EcoCoin Contribution Reward System
 Overview
 The EcoCoin Contribution Reward System is a decentralized platform that incentivizes users to contribute to environmental causes, particularly plastic recycling. For each contribution made, users are rewarded with a unique NFT that reflects their level of participation. In addition, users earn EcoCoins (an ERC20 token) based on the level of their contribution, providing them with tangible rewards for their efforts.
 
-This project was developed for the Alchemy x Scroll Hackathon, encouraging creativity and moonshot ideas. The goal of the platform is to create a sustainable and gamified system that rewards users for real-world environmental contributions.
+This project was developed for the Arbitrum Hackathon, encouraging creativity and moonshot ideas. The goal of the platform is to create a sustainable and gamified system that rewards users for real-world environmental contributions.
 
 Tech Stack
-Smart Contracts: Solidity (Deployed on Scroll)
-Blockchain API: Alchemy RPC via the Scroll API
+Smart Contracts: Arbitrum Sepolia
 Token Standards: ERC721 (NFTs) and ERC20 (EcoCoin)
 Libraries: OpenZeppelin for secure and standardized contract code
 
@@ -72,9 +71,9 @@ npm install
 Compile the smart contracts:
 
 npx hardhat compile
-Deploy the contracts to Scroll (or a testnet):
+Deploy the contracts to Arbitrum (or a testnet):
 
-npx hardhat run scripts/deploy.js --network scroll
+npx hardhat run scripts/deploy.js --network arbitrumSepolia
 
 Test the contract functionality (optional):
 npx hardhat test
@@ -90,4 +89,5 @@ Level Up: Users who contribute more frequently or significantly earn higher-leve
 Gamified Experience: As users accumulate more NFTs and tokens, they progress through different levels, gaining recognition and status within the platform.
 
 License
-This project is licensed under the MIT License - see the LICENSE file for details.```
+This project is licensed under the MIT License - see the LICENSE file for details.
+```
